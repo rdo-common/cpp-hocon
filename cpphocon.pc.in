@@ -1,0 +1,11 @@
+prefix=@@PREFIX@@
+exec_prefix=${prefix}
+includedir=${prefix}/include
+libdir=${exec_prefix}/@@LIBDIR@@
+
+Name: cpphocon
+Description: The cpp-hcon library
+Version: @@VERSION@@
+Cflags: -I${includedir}/hocon
+Libs: -L${libdir} -llibcpp-hocon
+
