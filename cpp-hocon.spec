@@ -1,6 +1,6 @@
 Name:       cpp-hocon
 Version:    0.1.6
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    The library provides C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
@@ -79,6 +79,9 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 
 
 %changelog
+* Tue Jan 23 2018 Jonathan Wakely <jwakely@redhat.com> - 0.1.6-4
+- Rebuilt for Boost 1.66
+
 * Wed Oct 25 2017 James Hogarth <james.hogarth@gmail.com> - 0.1.6-3
 - Point to correct location on epel7 for leatherman cmake3 files
 
