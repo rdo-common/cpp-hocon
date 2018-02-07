@@ -1,6 +1,6 @@
 Name:       cpp-hocon
 Version:    0.1.6
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    The library provides C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
@@ -79,6 +79,9 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 
 
 %changelog
+* Wed Feb 07 2018 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.6-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_28_Mass_Rebuild
+
 * Tue Jan 23 2018 Jonathan Wakely <jwakely@redhat.com> - 0.1.6-4
 - Rebuilt for Boost 1.66
 
