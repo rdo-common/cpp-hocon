@@ -9,6 +9,7 @@ Source0:    https://github.com/puppetlabs/%{name}/archive/%{version}.tar.gz#/%{n
 Source1:    cpphocon.pc.in
 
 %if 0%{?fedora}
+BuildRequires:  gcc-c++
 BuildRequires:    cmake
 BuildRequires:    boost-devel
 %else
