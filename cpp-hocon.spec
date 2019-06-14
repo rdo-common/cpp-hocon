@@ -1,3 +1,10 @@
+%if 0%{?epel}
+%global boost_version 157
+%else
+# CentOS SIGs have newer //-installable Boost
+%global boost_version 159
+%endif
+
 Name:       cpp-hocon
 Version:    0.1.6
 Release:    9%{?dist}
@@ -14,7 +21,7 @@ BuildRequires:    cmake
 BuildRequires:    boost-devel
 %else
 BuildRequires:    cmake3
-BuildRequires:    boost157-devel
+BuildRequires:    boost%{?boost_version}-devel
 %endif
 
 BuildRequires:    leatherman-devel
@@ -42,8 +49,8 @@ Libraries and headers to links against cpp-hocon
        -DCMAKE_BUILD_TYPE=Debug \
        -DCMAKE_INSTALL_PREFIX=%{_prefix}
 %else
-%cmake3 -DBOOST_INCLUDEDIR=/usr/include/boost157 \
-        -DBOOST_LIBRARYDIR=%{_libdir}/boost157 \
+%cmake3 -DBOOST_INCLUDEDIR=/usr/include/boost%{?boost_version} \
+        -DBOOST_LIBRARYDIR=%{_libdir}/boost%{?boost_version} \
         -DBUILD_SHARED_LIBS=ON \
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_INSTALL_PREFIX=%{_prefix} \
@@ -64,8 +71,12 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 
 %check
 # %__make test
-
+%if 0%{?fedora} || 0%{?rhel} > 7
 %ldconfig_scriptlets
+%else
+%post -p /sbin/ldconfig
+%postun -p /sbin/ldconfig
+%endif
 
 %files
 %license LICENSE
