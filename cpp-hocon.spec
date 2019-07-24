@@ -1,25 +1,25 @@
-Name:       cpp-hocon
-Version:    0.1.6
-Release:    10%{?dist}
-Summary:    The library provides C++ support for the HOCON configuration file format
-
-License:    ASL 2.0
-URL:        https://github.com/puppetlabs/%{name}
-Source0:    https://github.com/puppetlabs/%{name}/archive/%{version}.tar.gz#/%{name}-%{version}.tar.gz
-Source1:    cpphocon.pc.in
-
-%if 0%{?fedora}
-BuildRequires:  gcc-c++
-BuildRequires:    cmake
-BuildRequires:    boost-devel
-%else
-BuildRequires:    cmake3
-BuildRequires:    boost157-devel
+%if 0%{?rhel} && 0%{?rhel} <= 7
+%global boost_suffix 169
+%global cmake_suffix 3
+%global cmake %%cmake%{?cmake_suffix}
 %endif
 
-BuildRequires:    leatherman-devel
-BuildRequires:    curl-devel
-BuildRequires:    gettext
+Name:       cpp-hocon
+Version:    0.2.1
+Release:    1%{?dist}
+Summary:    C++ support for the HOCON configuration file format
+
+License:    ASL 2.0
+URL:        https://github.com/puppetlabs/cpp-hocon
+Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+Source1:    cpphocon.pc.in
+
+BuildRequires:  cmake%{?cmake_suffix} >= 3.2.2
+BuildRequires:  make
+BuildRequires:  gcc-c++
+BuildRequires:  boost%{?boost_suffix}-devel >= 1.54
+BuildRequires:  leatherman-devel
+BuildRequires:  gettext
 
 %description
 This is a port of the TypesafeConfig library to C++.
@@ -31,28 +31,23 @@ Requires: %{name}%{?_isa} = %{version}-%{release}
 Summary:    Development files for the cpp-hocon library
 
 %description devel
-Libraries and headers to links against cpp-hocon
+Libraries and headers to links against cpp-hocon.
 
 %prep
 %autosetup
 
 %build
-%if 0%{?fedora}
-%cmake -DBUILD_SHARED_LIBS=ON \
-       -DCMAKE_BUILD_TYPE=Debug \
-       -DCMAKE_INSTALL_PREFIX=%{_prefix}
-%else
-%cmake3 -DBOOST_INCLUDEDIR=/usr/include/boost157 \
-        -DBOOST_LIBRARYDIR=%{_libdir}/boost157 \
-        -DBUILD_SHARED_LIBS=ON \
-        -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_INSTALL_PREFIX=%{_prefix} \
-        -DLeatherman_DIR=%{_libdir}/cmake3/leatherman
-%endif
-%__make
+%cmake . -B%{_target_platform} \
+  -DBOOST_INCLUDEDIR=%{_includedir}/boost%{?boost_suffix} \
+  -DBOOST_LIBRARYDIR=%{_libdir}/boost%{?boost_suffix} \
+  -DLeatherman_DIR=%{_libdir}/cmake%{?cmake_suffix}/leatherman \
+  -DBUILD_SHARED_LIBS=ON \
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
+  %{nil}
+%make_build -C %{_target_platform}
 
 %install
-%make_install
+%make_install -C %{_target_platform}
 
 # upstream doesn't provide a cmake or pkgconfig file so write one ourselves
 mkdir -p %{buildroot}%{_libdir}/pkgconfig
@@ -60,10 +55,6 @@ cp -p %{SOURCE1} %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@PREFIX@@#%{_prefix}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@VERSION@@#%{version}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-
-
-%check
-# %__make test
 
 %ldconfig_scriptlets
 
@@ -73,11 +64,13 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 
 %files devel
 %{_libdir}/lib%{name}.so
-%{_includedir}/hocon
+%{_includedir}/hocon/
 %{_libdir}/pkgconfig/cpphocon.pc
 
-
 %changelog
+* Wed Jul 24 2019 Igor Gnatenko <ignatenkobrain@fedoraproject.org> - 0.2.1-1
+- Update to 0.2.1
+
 * Wed Jul 24 2019 Fedora Release Engineering <releng@fedoraproject.org> - 0.1.6-10
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_31_Mass_Rebuild
 
