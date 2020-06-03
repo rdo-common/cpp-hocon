@@ -6,13 +6,14 @@
 
 Name:       cpp-hocon
 Version:    0.2.1
-Release:    2%{?dist}
+Release:    3%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
 URL:        https://github.com/puppetlabs/cpp-hocon
 Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:    cpphocon.pc.in
+Patch0:     %{name}-missing-headers.patch
 
 BuildRequires:  cmake%{?cmake_suffix} >= 3.2.2
 BuildRequires:  make
@@ -34,7 +35,7 @@ Summary:    Development files for the cpp-hocon library
 Libraries and headers to links against cpp-hocon.
 
 %prep
-%autosetup
+%autosetup -p1
 
 %build
 %cmake . -B%{_target_platform} \
@@ -68,6 +69,9 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 %{_libdir}/pkgconfig/cpphocon.pc
 
 %changelog
+* Wed Jun 03 2020 Jonathan Wakely <jwakely@redhat.com> - 0.2.1-3
+- Rebuild for Boost 1.73.0
+
 * Tue Jan 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.1-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
 
