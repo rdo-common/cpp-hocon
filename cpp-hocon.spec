@@ -13,6 +13,7 @@ License:    ASL 2.0
 URL:        https://github.com/puppetlabs/cpp-hocon
 Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:    cpphocon.pc.in
+# https://github.com/puppetlabs/cpp-hocon/pull/124
 Patch0:     %{name}-missing-headers.patch
 
 BuildRequires:  cmake%{?cmake_suffix} >= 3.2.2
