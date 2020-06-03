@@ -1,0 +1,10 @@
+--- cpp-hocon-0.2.1/lib/tests/CMakeLists.txt~	2020-06-03 11:26:20.690331543 +0100
++++ cpp-hocon-0.2.1/lib/tests/CMakeLists.txt	2020-06-03 11:26:22.519331902 +0100
+@@ -26,6 +26,7 @@
+ 
+ target_link_libraries(lib${PROJECT_NAME}_test
+     ${Boost_LIBRARIES}
++    Boost::filesystem
+     ${LEATHERMAN_LIBRARIES}
+     ${CMAKE_THREAD_LIBS_INIT}
+ )

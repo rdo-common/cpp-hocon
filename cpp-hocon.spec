@@ -6,7 +6,7 @@
 
 Name:       cpp-hocon
 Version:    0.2.1
-Release:    3%{?dist}
+Release:    4%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
@@ -15,6 +15,7 @@ Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:    cpphocon.pc.in
 # https://github.com/puppetlabs/cpp-hocon/pull/124
 Patch0:     %{name}-missing-headers.patch
+Patch1:     %{name}-boost-filesystem-link.patch
 
 BuildRequires:  cmake%{?cmake_suffix} >= 3.2.2
 BuildRequires:  make
@@ -70,6 +71,10 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 %{_libdir}/pkgconfig/cpphocon.pc
 
 %changelog
+* Wed Jun 03 2020 Jonathan Wakely <jwakely@redhat.com> - 0.2.1-4
+- Rebuilt for leatherman-1.12.0
+- Link tests to libboost_filesystem
+
 * Wed Jun 03 2020 Jonathan Wakely <jwakely@redhat.com> - 0.2.1-3
 - Rebuild for Boost 1.73.0
 
