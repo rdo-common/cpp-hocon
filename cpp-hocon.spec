@@ -6,7 +6,7 @@
 
 Name:       cpp-hocon
 Version:    0.2.1
-Release:    4%{?dist}
+Release:    5%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
@@ -71,6 +71,9 @@ sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 %{_libdir}/pkgconfig/cpphocon.pc
 
 %changelog
+* Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.1-5
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Wed Jun 03 2020 Jonathan Wakely <jwakely@redhat.com> - 0.2.1-4
 - Rebuilt for leatherman-1.12.0
 - Link tests to libboost_filesystem
