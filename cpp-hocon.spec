@@ -2,55 +2,91 @@
 %global boost_suffix 169
 %global cmake_suffix 3
 %global cmake %%cmake%{?cmake_suffix}
+%global cmake_build %%cmake%{?cmake_suffix}_build
+%global cmake_install %%cmake%{?cmake_suffix}_install
+%global ctest %%ctest%{?cmake_suffix}
 %endif
+
+%global min_boost 1.54
+%global min_cmake 3.2.2
+
+# Makes sure an SONAME bump does not catch us by surprise. Currently, there is
+# no ABI stability even across patch releases, and the SONAME comes from the
+# complete version number.
+%global so_version 0.2.1
 
 Name:       cpp-hocon
 Version:    0.2.1
-Release:    5%{?dist}
+Release:    6%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
-URL:        https://github.com/puppetlabs/cpp-hocon
+URL:        https://github.com/puppetlabs/%{name}
 Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 Source1:    cpphocon.pc.in
 # https://github.com/puppetlabs/cpp-hocon/pull/124
 Patch0:     %{name}-missing-headers.patch
-Patch1:     %{name}-boost-filesystem-link.patch
+# Backport upstream commit caab275509826dc5fe5ab2632582abb8f83ea2b3 to link
+# against compiled Boost Filesystem library; this is not a header-only library.
+Patch1:     %{name}-0.2.1-boost-filesystem.patch
 
-BuildRequires:  cmake%{?cmake_suffix} >= 3.2.2
+BuildRequires:  cmake%{?cmake_suffix} >= %{min_cmake}
 BuildRequires:  make
 BuildRequires:  gcc-c++
-BuildRequires:  boost%{?boost_suffix}-devel >= 1.54
+BuildRequires:  boost%{?boost_suffix}-devel >= %{min_boost}
 BuildRequires:  leatherman-devel
 BuildRequires:  gettext
+
+BuildRequires:  doxygen
+
+# See facter, which has the same workaround.
+# autoreq is not picking this one up so be specific
+Requires:       leatherman%{?_isa}
 
 %description
 This is a port of the TypesafeConfig library to C++.
 
 The library provides C++ support for the HOCON configuration file format.
 
+
 %package devel
-Requires: %{name}%{?_isa} = %{version}-%{release}
-Summary:    Development files for the cpp-hocon library
+Summary:        Development files for the %{name} library
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+Requires:       boost%{?boost_suffix}-devel%{?_isa} >= %{min_boost}
+Requires:       leatherman-devel%{?_isa}
 
 %description devel
-Libraries and headers to links against cpp-hocon.
+Libraries and headers to link against %{name}.
+
+
+%package doc
+Summary:    Documentation for the %{name} library
+
+%description doc
+Documentation for the %{name} library.
+
 
 %prep
 %autosetup -p1
 
+
 %build
-%cmake . -B%{_target_platform} \
+%cmake \
   -DBOOST_INCLUDEDIR=%{_includedir}/boost%{?boost_suffix} \
   -DBOOST_LIBRARYDIR=%{_libdir}/boost%{?boost_suffix} \
   -DLeatherman_DIR=%{_libdir}/cmake%{?cmake_suffix}/leatherman \
   -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   %{nil}
-%make_build -C %{_target_platform}
+%cmake_build
+
+pushd lib
+doxygen Doxyfile
+popd
+
 
 %install
-%make_install -C %{_target_platform}
+%cmake_install
 
 # upstream doesn't provide a cmake or pkgconfig file so write one ourselves
 mkdir -p %{buildroot}%{_libdir}/pkgconfig
@@ -58,19 +94,47 @@ cp -p %{SOURCE1} %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@PREFIX@@#%{_prefix}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@VERSION@@#%{version}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
 sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
+%if 0%{?rhel} == 7
+sed -i -r 's#(Libs:[[:blank:]]+)#\1-L${libdir}/boost%{boost_suffix} #' \
+    %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
+%endif
 
+
+%check
+%ctest
+
+
+# Required for EL7 only:
 %ldconfig_scriptlets
+
 
 %files
 %license LICENSE
-%{_libdir}/lib%{name}.so.*
+%{_libdir}/lib%{name}.so.%{so_version}
+
 
 %files devel
 %{_libdir}/lib%{name}.so
 %{_includedir}/hocon/
 %{_libdir}/pkgconfig/cpphocon.pc
 
+
+%files doc
+%license LICENSE
+%doc CONTRIBUTING.md
+%doc README.md
+%doc lib/html
+
+
 %changelog
+* Fri Jan  8 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.1-6
+- Use %%{name} macro in several places
+- Use %%cmake_* macros consistently
+- Add a %%check section to run the tests
+- Build HTML documentation with Doxygen, and add a new -doc subpackage
+- Add top-level documentation files (README.md etc.)
+- Try to add necessary libs to the .pc file, and remove unnecessary -I
+
 * Mon Jul 27 2020 Fedora Release Engineering <releng@fedoraproject.org> - 0.2.1-5
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
 

@@ -4,8 +4,7 @@ includedir=${prefix}/include
 libdir=${exec_prefix}/@@LIBDIR@@
 
 Name: cpphocon
-Description: The cpp-hcon library
+Description: The cpp-hocon library
 Version: @@VERSION@@
-Cflags: -I${includedir}/hocon
-Libs: -L${libdir} -llibcpp-hocon
+Libs: -L${libdir} -llibcpp-hocon -lleatherman_locale -lleatherman_util -lboost_locale -lboost_thread
 
