@@ -15,16 +15,16 @@
 # complete version number.
 %global so_version 0.2.2
 
-Name:       cpp-hocon
-Version:    0.2.2
-Release:    1%{?dist}
-Summary:    C++ support for the HOCON configuration file format
+Name:           cpp-hocon
+Version:        0.2.2
+Release:        1%{?dist}
+Summary:        C++ support for the HOCON configuration file format
 
-License:    ASL 2.0
-URL:        https://github.com/puppetlabs/%{name}
-Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
+License:        ASL 2.0
+URL:            https://github.com/puppetlabs/%{name}
+Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # https://github.com/puppetlabs/cpp-hocon/pull/124
-Patch0:     %{name}-missing-headers.patch
+Patch0:         %{name}-missing-headers.patch
 
 BuildRequires:  cmake%{?cmake_suffix} >= %{min_cmake}
 BuildRequires:  make
