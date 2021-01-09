@@ -1,35 +1,24 @@
-%if 0%{?rhel} && 0%{?rhel} <= 7
-%global boost_suffix 169
-%global cmake_suffix 3
-%global cmake %%cmake%{?cmake_suffix}
-%global cmake_build %%cmake%{?cmake_suffix}_build
-%global cmake_install %%cmake%{?cmake_suffix}_install
-%global ctest %%ctest%{?cmake_suffix}
-%endif
+# Makes sure an SONAME bump does not catch us by surprise. Currently, there is
+# no ABI stability even across patch releases, and the SONAME comes from the
+# complete version number.
+%global so_version 0.3.0
 
 %global min_boost 1.54
 %global min_cmake 3.2.2
 
-# Makes sure an SONAME bump does not catch us by surprise. Currently, there is
-# no ABI stability even across patch releases, and the SONAME comes from the
-# complete version number.
-%global so_version 0.2.2
-
 Name:           cpp-hocon
-Version:        0.2.2
+Version:        0.3.0
 Release:        1%{?dist}
 Summary:        C++ support for the HOCON configuration file format
 
 License:        ASL 2.0
 URL:            https://github.com/puppetlabs/%{name}
 Source0:        %{url}/archive/%{version}/%{name}-%{version}.tar.gz
-# https://github.com/puppetlabs/cpp-hocon/pull/124
-Patch0:         %{name}-missing-headers.patch
 
-BuildRequires:  cmake%{?cmake_suffix} >= %{min_cmake}
+BuildRequires:  cmake >= %{min_cmake}
 BuildRequires:  make
 BuildRequires:  gcc-c++
-BuildRequires:  boost%{?boost_suffix}-devel >= %{min_boost}
+BuildRequires:  boost-devel >= %{min_boost}
 BuildRequires:  leatherman-devel
 BuildRequires:  gettext
 
@@ -48,7 +37,7 @@ The library provides C++ support for the HOCON configuration file format.
 %package devel
 Summary:        Development files for the %{name} library
 Requires:       %{name}%{?_isa} = %{version}-%{release}
-Requires:       boost%{?boost_suffix}-devel%{?_isa} >= %{min_boost}
+Requires:       boost-devel%{?_isa} >= %{min_boost}
 Requires:       leatherman-devel%{?_isa}
 
 %description devel
@@ -63,14 +52,12 @@ Documentation for the %{name} library.
 
 
 %prep
-%autosetup -p1
+%autosetup
 
 
 %build
 %cmake \
-  -DBOOST_INCLUDEDIR=%{_includedir}/boost%{?boost_suffix} \
-  -DBOOST_LIBRARYDIR=%{_libdir}/boost%{?boost_suffix} \
-  -DLeatherman_DIR=%{_libdir}/cmake%{?cmake_suffix}/leatherman \
+  -DLeatherman_DIR=%{_libdir}/cmake/leatherman \
   -DBUILD_SHARED_LIBS=ON \
   -DCMAKE_BUILD_TYPE=RelWithDebInfo \
   %{nil}
@@ -89,10 +76,6 @@ popd
 %ctest
 
 
-# Required for EL7 only:
-%ldconfig_scriptlets
-
-
 %files
 %license LICENSE
 %{_libdir}/lib%{name}.so.%{so_version}
@@ -100,7 +83,7 @@ popd
 
 %files devel
 %{_libdir}/lib%{name}.so
-%{_includedir}/hocon/
+%{_includedir}/hocon
 
 
 %files doc
@@ -111,6 +94,12 @@ popd
 
 
 %changelog
+* Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.3.0-1
+- Update to 0.3.0 (SONAME bump)
+- Drop EPEL7 conditionals in Fedora spec file
+- Drop missing header patch, now upstreamed
+  (https://github.com/puppetlabs/cpp-hocon/pull/124)
+
 * Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.2-1
 - Update to 0.2.2 (SONAME bump)
 - Drop patch for upstream commit caab275509826dc5fe5ab2632582abb8f83ea2b3, now
