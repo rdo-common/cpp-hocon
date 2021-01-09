@@ -13,11 +13,11 @@
 # Makes sure an SONAME bump does not catch us by surprise. Currently, there is
 # no ABI stability even across patch releases, and the SONAME comes from the
 # complete version number.
-%global so_version 0.2.1
+%global so_version 0.2.2
 
 Name:       cpp-hocon
-Version:    0.2.1
-Release:    7%{?dist}
+Version:    0.2.2
+Release:    1%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
@@ -25,9 +25,6 @@ URL:        https://github.com/puppetlabs/%{name}
 Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
 # https://github.com/puppetlabs/cpp-hocon/pull/124
 Patch0:     %{name}-missing-headers.patch
-# Backport upstream commit caab275509826dc5fe5ab2632582abb8f83ea2b3 to link
-# against compiled Boost Filesystem library; this is not a header-only library.
-Patch1:     %{name}-0.2.1-boost-filesystem.patch
 
 BuildRequires:  cmake%{?cmake_suffix} >= %{min_cmake}
 BuildRequires:  make
@@ -114,6 +111,11 @@ popd
 
 
 %changelog
+* Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.2-1
+- Update to 0.2.2 (SONAME bump)
+- Drop patch for upstream commit caab275509826dc5fe5ab2632582abb8f83ea2b3, now
+  released
+
 * Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.1-7
 - Drop downstream pkg-config support (no .pc file)
 
