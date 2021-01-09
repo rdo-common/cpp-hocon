@@ -17,13 +17,12 @@
 
 Name:       cpp-hocon
 Version:    0.2.1
-Release:    6%{?dist}
+Release:    7%{?dist}
 Summary:    C++ support for the HOCON configuration file format
 
 License:    ASL 2.0
 URL:        https://github.com/puppetlabs/%{name}
 Source0:    %{url}/archive/%{version}/%{name}-%{version}.tar.gz
-Source1:    cpphocon.pc.in
 # https://github.com/puppetlabs/cpp-hocon/pull/124
 Patch0:     %{name}-missing-headers.patch
 # Backport upstream commit caab275509826dc5fe5ab2632582abb8f83ea2b3 to link
@@ -88,17 +87,6 @@ popd
 %install
 %cmake_install
 
-# upstream doesn't provide a cmake or pkgconfig file so write one ourselves
-mkdir -p %{buildroot}%{_libdir}/pkgconfig
-cp -p %{SOURCE1} %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-sed -i 's#@@PREFIX@@#%{_prefix}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-sed -i 's#@@VERSION@@#%{version}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-sed -i 's#@@LIBDIR@@#%{_lib}#' %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-%if 0%{?rhel} == 7
-sed -i -r 's#(Libs:[[:blank:]]+)#\1-L${libdir}/boost%{boost_suffix} #' \
-    %{buildroot}%{_libdir}/pkgconfig/cpphocon.pc
-%endif
-
 
 %check
 %ctest
@@ -116,7 +104,6 @@ sed -i -r 's#(Libs:[[:blank:]]+)#\1-L${libdir}/boost%{boost_suffix} #' \
 %files devel
 %{_libdir}/lib%{name}.so
 %{_includedir}/hocon/
-%{_libdir}/pkgconfig/cpphocon.pc
 
 
 %files doc
@@ -127,6 +114,9 @@ sed -i -r 's#(Libs:[[:blank:]]+)#\1-L${libdir}/boost%{boost_suffix} #' \
 
 
 %changelog
+* Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.1-7
+- Drop downstream pkg-config support (no .pc file)
+
 * Fri Jan  8 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.2.1-6
 - Use %%{name} macro in several places
 - Use %%cmake_* macros consistently
