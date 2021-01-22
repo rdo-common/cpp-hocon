@@ -8,7 +8,7 @@
 
 Name:           cpp-hocon
 Version:        0.3.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        C++ support for the HOCON configuration file format
 
 License:        ASL 2.0
@@ -94,6 +94,9 @@ popd
 
 
 %changelog
+* Fri Jan 22 2021 Jonathan Wakely <jwakely@redhat.com> - 0.3.0-2
+- Rebuilt for Boost 1.75
+
 * Sat Jan  9 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.3.0-1
 - Update to 0.3.0 (SONAME bump)
 - Drop EPEL7 conditionals in Fedora spec file
