@@ -8,7 +8,7 @@
 
 Name:           cpp-hocon
 Version:        0.3.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        C++ support for the HOCON configuration file format
 
 License:        ASL 2.0
@@ -94,6 +94,9 @@ popd
 
 
 %changelog
+* Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.3.0-3
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
+
 * Fri Jan 22 2021 Jonathan Wakely <jwakely@redhat.com> - 0.3.0-2
 - Rebuilt for Boost 1.75
 
