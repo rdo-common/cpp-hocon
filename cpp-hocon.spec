@@ -22,6 +22,10 @@ BuildRequires:  boost-devel >= %{min_boost}
 BuildRequires:  leatherman-devel
 BuildRequires:  gettext
 
+# Tests
+BuildRequires:  catch1-devel
+
+# Documentation
 BuildRequires:  doxygen
 
 # See facter, which has the same workaround.
@@ -54,11 +58,19 @@ Documentation for the %{name} library.
 %prep
 %autosetup
 
+# Do not use the obsolete vendored copy of the Catch unit testing library
+# included with leatherman.
+sed -r -i 's/(LEATHERMAN_COMPONENTS)(\b.+)?(\bcatch\b)/\1\2/' CMakeLists.txt
+sed -r -i 's|\$\{LEATHERMAN_CATCH_INCLUDE\}|"%{_includedir}/catch"|' \
+    lib/tests/CMakeLists.txt
+
 
 %build
+%set_build_flags
+
 %cmake \
-  -DLeatherman_DIR=%{_libdir}/cmake/leatherman \
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    -DLeatherman_DIR=%{_libdir}/cmake/leatherman \
+    -DCMAKE_BUILD_TYPE=RelWithDebInfo
 %cmake_build
 
 cd lib
@@ -92,7 +104,10 @@ doxygen Doxyfile
 
 %changelog
 * Tue Mar 09 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.3.0-4
-- Trivial improvements in the %%build section
+- Trivial simplification in the %%build section
+- BR catch1-devel, and patch the build system to use it instead of the vendored
+  copy in leatherman-devel; this fixes FTBFS due to SIGSTKSZ no longer being a
+  preprocessor macro constant in glibc 2.34
 
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.3.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
