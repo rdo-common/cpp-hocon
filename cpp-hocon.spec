@@ -8,7 +8,7 @@
 
 Name:           cpp-hocon
 Version:        0.3.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        C++ support for the HOCON configuration file format
 
 License:        ASL 2.0
@@ -58,14 +58,11 @@ Documentation for the %{name} library.
 %build
 %cmake \
   -DLeatherman_DIR=%{_libdir}/cmake/leatherman \
-  -DBUILD_SHARED_LIBS=ON \
-  -DCMAKE_BUILD_TYPE=RelWithDebInfo \
-  %{nil}
+  -DCMAKE_BUILD_TYPE=RelWithDebInfo
 %cmake_build
 
-pushd lib
+cd lib
 doxygen Doxyfile
-popd
 
 
 %install
@@ -94,6 +91,9 @@ popd
 
 
 %changelog
+* Tue Mar 09 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.3.0-4
+- Trivial improvements in the %%build section
+
 * Tue Jan 26 2021 Fedora Release Engineering <releng@fedoraproject.org> - 0.3.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_34_Mass_Rebuild
 
