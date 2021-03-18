@@ -8,7 +8,7 @@
 
 Name:           cpp-hocon
 Version:        0.3.0
-Release:        4%{?dist}
+Release:        4.1%{?dist}
 Summary:        C++ support for the HOCON configuration file format
 
 License:        ASL 2.0
@@ -103,6 +103,9 @@ doxygen Doxyfile
 
 
 %changelog
+* Thu Mar 18 2021 Alfredo Moralejo <amoralej@redhat.com> - 0.3.0-4.1
+- Rebuild for leatherman 1.12.0
+
 * Tue Mar 09 2021 Benjamin A. Beasley <code@musicinmybrain.net> - 0.3.0-4
 - Trivial simplification in the %%build section
 - BR catch1-devel, and patch the build system to use it instead of the vendored
